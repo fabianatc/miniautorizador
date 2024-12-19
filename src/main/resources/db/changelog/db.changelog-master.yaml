@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 202412190906_create_table_cartao
+      author: fabiana.costa
+      changes:
+        - sqlFile:
+            encoding: utf8
+            relativeToChangelogFile: true
+            splitStatements: false
+            path: sqls/202412190906_create_table_cartao.sql
