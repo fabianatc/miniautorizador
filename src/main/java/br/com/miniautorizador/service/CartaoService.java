@@ -2,13 +2,14 @@ package br.com.miniautorizador.service;
 
 import br.com.miniautorizador.domain.cartao.Cartao;
 import br.com.miniautorizador.domain.cartao.exception.CartaoExistenteException;
+import br.com.miniautorizador.domain.cartao.exception.CartaoInexistenteException;
 import br.com.miniautorizador.infrastructure.repository.CartaoRepository;
 import br.com.miniautorizador.presentation.dto.CartaoRequest;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -44,5 +45,18 @@ public class CartaoService {
         } catch (DataIntegrityViolationException e) {
             throw new CartaoExistenteException(cartaoRequest.getSenha(), cartaoRequest.getNumeroCartao());
         }
+    }
+
+    /**
+     * Obtém o saldo do cartão.
+     *
+     * @param numeroCartao Número do cartão.
+     * @return Saldo disponível.
+     */
+    @Transactional(readOnly = true)
+    public BigDecimal obterSaldo(String numeroCartao) {
+        Cartao cartao = cartaoRepository.findByNumeroCartao(numeroCartao)
+                .orElseThrow(() -> new CartaoInexistenteException(numeroCartao));
+        return cartao.getSaldo();
     }
 }
