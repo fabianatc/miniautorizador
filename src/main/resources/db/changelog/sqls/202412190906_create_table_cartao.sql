@@ -1,4 +1,4 @@
-CREATE TABLE cartao (
+CREATE TABLE cartoes(
     numero_cartao VARCHAR(16) NOT NULL,
     senha VARCHAR(60) NOT NULL,
     saldo DECIMAL(10, 2) NOT NULL DEFAULT 500.00,
