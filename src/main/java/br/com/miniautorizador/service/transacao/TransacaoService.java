@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class TransacaoService {
@@ -29,59 +28,66 @@ public class TransacaoService {
     }
 
     /**
-     * Realiza uma transação de débito no cartão
+     * Realiza uma transação de débito no cartão.
      *
      * @param transacaoRequest Dados da transação.
      */
     @Transactional
     public void realizarTransacao(TransacaoRequest transacaoRequest) {
-        cartaoRepository.findByNumeroCartao(transacaoRequest.getNumeroCartao())
-                .map(cartao -> validarSenha(cartao, transacaoRequest))
-                .map(cartao -> validarSaldo(cartao, transacaoRequest))
-                .map(cartao -> atualizarSaldo(cartao, transacaoRequest.getValor()))
-                .orElseThrow(() -> new CartaoInexistenteTransacaoException(transacaoRequest.getNumeroCartao()));
+        Cartao cartao = buscarCartao(transacaoRequest.getNumeroCartao());
+        validarSenha(cartao, transacaoRequest.getSenhaCartao());
+        validarSaldo(cartao, transacaoRequest.getValor());
+        atualizarSaldo(cartao, transacaoRequest.getValor());
+    }
+
+    /**
+     * Busca um cartão pelo número.
+     *
+     * @param numeroCartao Número do cartão.
+     * @return Cartão encontrado.
+     * @throws CartaoInexistenteTransacaoException Se o cartão não existir.
+     */
+    private Cartao buscarCartao(String numeroCartao) {
+        return cartaoRepository.findByNumeroCartao(numeroCartao)
+                .orElseThrow(() -> new CartaoInexistenteTransacaoException(numeroCartao));
     }
 
     /**
      * Valida a senha do cartão.
      *
-     * @param cartao O cartão encontrado.
-     * @return O próprio cartão se a senha for válida.
+     * @param cartao      Cartão a ser validado.
+     * @param senhaCartao Senha informada.
      * @throws SenhaInvalidaException Se a senha for inválida.
      */
-    private Cartao validarSenha(Cartao cartao, TransacaoRequest transacaoRequest) {
-        Optional.of(cartao)
-                .filter(c -> passwordEncoder.matches(transacaoRequest.getSenhaCartao(), c.getSenha()))
-                .orElseThrow(SenhaInvalidaException::new);
-        return cartao;
+    private void validarSenha(Cartao cartao, String senhaCartao) {
+        if (!passwordEncoder.matches(senhaCartao, cartao.getSenha())) {
+            throw new SenhaInvalidaException();
+        }
     }
 
     /**
      * Valida se o saldo do cartão é suficiente para a transação.
      *
-     * @param cartao O cartão com a senha validada.
-     * @return O próprio cartão se o saldo for suficiente.
+     * @param cartao Cartão a ser validado.
+     * @param valor  Valor da transação.
      * @throws SaldoInsuficienteException Se o saldo for insuficiente.
      */
-    private Cartao validarSaldo(Cartao cartao, TransacaoRequest transacaoRequest) {
-        Optional.of(cartao)
-                .filter(c -> c.getSaldo().compareTo(transacaoRequest.getValor()) >= 0)
-                .orElseThrow(SaldoInsuficienteException::new);
-        return cartao;
+    private void validarSaldo(Cartao cartao, BigDecimal valor) {
+        if (cartao.getSaldo().compareTo(valor) < 0) {
+            throw new SaldoInsuficienteException();
+        }
     }
 
     /**
      * Atualiza o saldo do cartão após a transação.
      *
-     * @param cartao O cartão com saldo suficiente.
-     * @param valor  O valor da transação.
-     * @return O cartão atualizado.
-     * @throws OptimisticLockingFailureException Em caso de conflito de concorrência.
+     * @param cartao Cartão a ser atualizado.
+     * @param valor  Valor da transação.
      */
-    private Cartao atualizarSaldo(Cartao cartao, BigDecimal valor) {
+    private void atualizarSaldo(Cartao cartao, BigDecimal valor) {
         cartao.setSaldo(cartao.getSaldo().subtract(valor));
         try {
-            return cartaoRepository.save(cartao);
+            cartaoRepository.save(cartao);
         } catch (OptimisticLockingFailureException e) {
             throw new RuntimeException("Conflito de concorrência ao atualizar o saldo do cartão.", e);
         }
