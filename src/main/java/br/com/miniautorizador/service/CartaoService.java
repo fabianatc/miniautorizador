@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class CartaoService {
@@ -24,15 +25,10 @@ public class CartaoService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Cria um novo cartão com saldo inicial de R$500,00.
-     *
-     * @param cartaoRequest Dados do cartão a ser criado.
-     * @return Cartão criado.
-     */
     @Transactional
     public Cartao criarCartao(CartaoRequest cartaoRequest) {
         try {
+            validarCartaoRequest(cartaoRequest);
             String senhaHash = passwordEncoder.encode(cartaoRequest.getSenha());
 
             Cartao cartao = new Cartao(
@@ -47,12 +43,12 @@ public class CartaoService {
         }
     }
 
-    /**
-     * Obtém o saldo do cartão.
-     *
-     * @param numeroCartao Número do cartão.
-     * @return Saldo disponível.
-     */
+    private void validarCartaoRequest(CartaoRequest cartaoRequest) {
+        Objects.requireNonNull(cartaoRequest, "Request não pode ser nula");
+        Objects.requireNonNull(cartaoRequest.getNumeroCartao(), "O número do cartão deve ser informado");
+        Objects.requireNonNull(cartaoRequest.getSenha(), "A senha do cartão deve ser informada");
+    }
+
     @Transactional(readOnly = true)
     public BigDecimal obterSaldo(String numeroCartao) {
         Cartao cartao = cartaoRepository.findByNumeroCartao(numeroCartao)

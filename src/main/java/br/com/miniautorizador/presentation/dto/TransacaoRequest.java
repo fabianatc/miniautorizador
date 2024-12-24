@@ -4,11 +4,13 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
+@AllArgsConstructor
 public class TransacaoRequest {
     @NotBlank(message = "O número do cartão é obrigatório.")
     @Size(min = 16, max = 16, message = "O número do cartão deve ter 16 dígitos.")

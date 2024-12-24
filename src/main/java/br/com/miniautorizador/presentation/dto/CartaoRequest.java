@@ -3,11 +3,13 @@ package br.com.miniautorizador.presentation.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CartaoRequest {
     @NotNull
     @Size(min = 16, max = 16)

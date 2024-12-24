@@ -27,11 +27,6 @@ public class TransacaoService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Realiza uma transação de débito no cartão.
-     *
-     * @param transacaoRequest Dados da transação.
-     */
     @Transactional
     public void realizarTransacao(TransacaoRequest transacaoRequest) {
         Cartao cartao = buscarCartao(transacaoRequest.getNumeroCartao());
@@ -40,50 +35,23 @@ public class TransacaoService {
         atualizarSaldo(cartao, transacaoRequest.getValor());
     }
 
-    /**
-     * Busca um cartão pelo número.
-     *
-     * @param numeroCartao Número do cartão.
-     * @return Cartão encontrado.
-     * @throws CartaoInexistenteTransacaoException Se o cartão não existir.
-     */
     private Cartao buscarCartao(String numeroCartao) {
         return cartaoRepository.findByNumeroCartao(numeroCartao)
                 .orElseThrow(() -> new CartaoInexistenteTransacaoException(numeroCartao));
     }
 
-    /**
-     * Valida a senha do cartão.
-     *
-     * @param cartao      Cartão a ser validado.
-     * @param senhaCartao Senha informada.
-     * @throws SenhaInvalidaException Se a senha for inválida.
-     */
     private void validarSenha(Cartao cartao, String senhaCartao) {
         if (!passwordEncoder.matches(senhaCartao, cartao.getSenha())) {
             throw new SenhaInvalidaException();
         }
     }
 
-    /**
-     * Valida se o saldo do cartão é suficiente para a transação.
-     *
-     * @param cartao Cartão a ser validado.
-     * @param valor  Valor da transação.
-     * @throws SaldoInsuficienteException Se o saldo for insuficiente.
-     */
     private void validarSaldo(Cartao cartao, BigDecimal valor) {
         if (cartao.getSaldo().compareTo(valor) < 0) {
             throw new SaldoInsuficienteException();
         }
     }
 
-    /**
-     * Atualiza o saldo do cartão após a transação.
-     *
-     * @param cartao Cartão a ser atualizado.
-     * @param valor  Valor da transação.
-     */
     private void atualizarSaldo(Cartao cartao, BigDecimal valor) {
         cartao.setSaldo(cartao.getSaldo().subtract(valor));
         try {
