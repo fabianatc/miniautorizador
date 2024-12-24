@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class TransacaoService {
@@ -29,10 +30,18 @@ public class TransacaoService {
 
     @Transactional
     public void realizarTransacao(TransacaoRequest transacaoRequest) {
+        validarRequest(transacaoRequest);
         Cartao cartao = buscarCartao(transacaoRequest.getNumeroCartao());
         validarSenha(cartao, transacaoRequest.getSenhaCartao());
         validarSaldo(cartao, transacaoRequest.getValor());
         atualizarSaldo(cartao, transacaoRequest.getValor());
+    }
+
+    private void validarRequest(TransacaoRequest transacaoRequest) {
+        Objects.requireNonNull(transacaoRequest, "Request não pode ser nula.");
+        Objects.requireNonNull(transacaoRequest.getNumeroCartao(), "O número do cartão deve ser informado.");
+        Objects.requireNonNull(transacaoRequest.getSenhaCartao(), "A senha do cartão deve ser informada.");
+        Objects.requireNonNull(transacaoRequest.getValor(), "O valor a ser debitado deve ser informado.");
     }
 
     private Cartao buscarCartao(String numeroCartao) {
