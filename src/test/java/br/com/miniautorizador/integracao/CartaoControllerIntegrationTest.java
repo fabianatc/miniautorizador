@@ -17,9 +17,9 @@ import org.springframework.http.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Classe de teste de integração para o controlador de cartões.
+ * Classe de teste de integração para a controller de cartões.
  * <p>
- * Essa classe é responsável por testar a integração do controlador de cartões com a aplicação.
+ * Essa classe é responsável por testar a integração da controller de cartões com a aplicação.
  *
  * @author Fabiana Costa
  */
