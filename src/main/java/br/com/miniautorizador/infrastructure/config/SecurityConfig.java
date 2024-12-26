@@ -35,7 +35,9 @@ public class SecurityConfig {
 
                 // Configura a autorização de requisições
                 .authorizeHttpRequests(auth -> auth
-                        // Qualquer requisição requer autenticação
+                        // Permite acesso ao Swagger sem autenticação
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // Qualquer outra requisição requer autenticação
                         .anyRequest().authenticated()
                 )
 
