@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -68,6 +69,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGenericException(MethodArgumentNotValidException e) {
         logger.error("Validação de dados inválida: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DADOS_INVALIDOS");
+    }
+
+    // Tratamento para HttpMessageNotReadableException
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleGenericException(HttpMessageNotReadableException e) {
+        logger.error("Validação de dados inválida: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("REQUEST_INVALIDA");
     }
 
     // Tratamento para outras exceções genéricas

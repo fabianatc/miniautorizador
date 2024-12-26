@@ -1,4 +1,4 @@
-package br.com.miniautorizador.unitarios.controllers;
+package br.com.miniautorizador.unitarios.presentation.controller;
 
 import br.com.miniautorizador.application.transacao.RealizarTransacaoUseCase;
 import br.com.miniautorizador.domain.cartao.exception.CartaoInexistenteTransacaoException;

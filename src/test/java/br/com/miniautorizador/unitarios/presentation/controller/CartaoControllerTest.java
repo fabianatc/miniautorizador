@@ -1,4 +1,4 @@
-package br.com.miniautorizador.unitarios.controllers;
+package br.com.miniautorizador.unitarios.presentation.controller;
 
 import br.com.miniautorizador.application.cartao.CriarCartaoUseCase;
 import br.com.miniautorizador.application.cartao.ObterSaldoUseCase;
