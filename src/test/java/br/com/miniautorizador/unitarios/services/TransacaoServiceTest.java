@@ -8,6 +8,7 @@ import br.com.miniautorizador.infrastructure.repository.CartaoRepository;
 import br.com.miniautorizador.presentation.dto.TransacaoRequest;
 import br.com.miniautorizador.service.transacao.TransacaoService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,6 +23,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+/**
+ * Classe de teste para o serviço de transação de débito no cartão.
+ * <p>
+ * Essa classe é responsável por testar a lógica de negócios do serviço de transação de débito, garantindo que as operações sejam executadas corretamente e de acordo com as regras de negócios.
+ * Os testes verificam se o serviço está funcionando corretamente na transação de débito no cartão, além de outras operações específicas do serviço.
+ *
+ * @author Fabiana Costa
+ */
 @ExtendWith(MockitoExtension.class)
 class TransacaoServiceTest {
     @Mock
@@ -38,6 +47,7 @@ class TransacaoServiceTest {
         transacaoService = new TransacaoService(cartaoRepository, passwordEncoder);
     }
 
+    @DisplayName("Teste de realização de transação de débito com sucesso")
     @Test
     void testRealizarTransacao_ComSucesso() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(100.00));
@@ -51,6 +61,7 @@ class TransacaoServiceTest {
         verify(cartaoRepository, times(1)).save(cartaoMock);
     }
 
+    @DisplayName("Teste de realização de transação de débito com cartão inexistente")
     @Test
     void testRealizarTransacao_CartaoInexistente() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(100.00));
@@ -59,6 +70,7 @@ class TransacaoServiceTest {
         assertThrows(CartaoInexistenteTransacaoException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com senha inválida")
     @Test
     void testRealizarTransacao_SenhaInvalida() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(100.00));
@@ -69,6 +81,7 @@ class TransacaoServiceTest {
         assertThrows(SenhaInvalidaException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com saldo insuficiente")
     @Test
     void testRealizarTransacao_SaldoInsuficiente() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(600.00));
@@ -79,6 +92,7 @@ class TransacaoServiceTest {
         assertThrows(SaldoInsuficienteException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com concorrência de operação")
     @Test
     void testAtualizarSaldo_ConcorrenciaOperacao() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(300.00));
@@ -91,23 +105,27 @@ class TransacaoServiceTest {
         assertThrows(RuntimeException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com request null")
     @Test
     void testRealizarTransacao_RequestNull() {
         assertThrows(NullPointerException.class, () -> transacaoService.realizarTransacao(null));
     }
 
+    @DisplayName("Teste de realização de transação de débito com número de cartão nulo")
     @Test
     void testRealizarTransacao_NumeroCartaoNull() {
         TransacaoRequest transacaoRequest = new TransacaoRequest(null, "1234", BigDecimal.valueOf(100.00));
         assertThrows(NullPointerException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com senha nula")
     @Test
     void testRealizarTransacao_SenhaNull() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", null, BigDecimal.valueOf(100.00));
         assertThrows(NullPointerException.class, () -> transacaoService.realizarTransacao(transacaoRequest));
     }
 
+    @DisplayName("Teste de realização de transação de débito com valor nulo")
     @Test
     void testRealizarTransacao_ValorNull() {
         TransacaoRequest transacaoRequest = new TransacaoRequest("1234567890123456", "1234", null);

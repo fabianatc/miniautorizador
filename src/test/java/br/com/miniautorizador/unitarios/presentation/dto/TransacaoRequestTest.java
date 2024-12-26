@@ -6,6 +6,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,6 +17,14 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Classe de teste para a request de transação.
+ * <p>
+ * Essa classe é responsável por testar a validação e a estrutura da request de transação, garantindo que os dados sejam consistentes e válidos.
+ * Os testes verificam se a request está sendo processada corretamente e se está retornando as mensagens de erro esperadas em caso de falha.
+ *
+ * @author Fabiana Costa
+ */
 @ExtendWith(MockitoExtension.class)
 class TransacaoRequestTest {
     private static Validator validator;
@@ -26,6 +35,7 @@ class TransacaoRequestTest {
         validator = factory.getValidator();
     }
 
+    @DisplayName("Teste de requisição de transação válida")
     @Test
     void testTransacaoRequest_Valido() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(100.00));
@@ -33,6 +43,7 @@ class TransacaoRequestTest {
         assertTrue(violations.isEmpty(), "Não deve haver violações de validação para uma requisição válida.");
     }
 
+    @DisplayName("Teste de validação de requisição de transação com número nulo")
     @Test
     void testNumeroCartao_Nulo() {
         TransacaoRequest request = new TransacaoRequest(null, "1234", BigDecimal.valueOf(100.00));
@@ -41,6 +52,7 @@ class TransacaoRequestTest {
         assertEquals("O número do cartão é obrigatório.", violations.iterator().next().getMessage());
     }
 
+    @DisplayName("Teste de validação de requisição de transação com número de tamanho inválido")
     @Test
     void testNumeroCartao_TamanhoInvalido() {
         TransacaoRequest request = new TransacaoRequest("123456789012345", "1234", BigDecimal.valueOf(100.00));
@@ -57,6 +69,7 @@ class TransacaoRequestTest {
         assertTrue(caracteresInvalidosEncontrado, "A mensagem 'O número do cartão deve conter apenas dígitos.' deve estar presente.");
     }
 
+    @DisplayName("Teste de validação de requisição de transação com número de caracteres inválidos")
     @Test
     void testNumeroCartao_CaracteresInvalidos() {
         TransacaoRequest request = new TransacaoRequest("123456789012345A", "1234", BigDecimal.valueOf(100.00));
@@ -65,6 +78,7 @@ class TransacaoRequestTest {
         assertEquals("O número do cartão deve conter apenas dígitos.", violations.iterator().next().getMessage());
     }
 
+    @DisplayName("Teste de validação de requisição de transação com senha nula")
     @Test
     void testSenhaCartao_Nula() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", null, BigDecimal.valueOf(100.00));
@@ -73,6 +87,7 @@ class TransacaoRequestTest {
         assertEquals("A senha do cartão é obrigatória.", violations.iterator().next().getMessage());
     }
 
+    @DisplayName("Teste de validação de requisição de transação com senha de tamanho inválido")
     @Test
     void testSenhaCartao_TamanhoInvalido() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", "127", BigDecimal.valueOf(100.00));
@@ -89,6 +104,7 @@ class TransacaoRequestTest {
         assertTrue(caracteresInvalidosEncontrado, "A mensagem 'A senha do cartão deve conter apenas dígitos.' deve estar presente.");
     }
 
+    @DisplayName("Teste de validação de requisição de transação com senha de caracteres inválidos")
     @Test
     void testSenhaCartao_CaracteresInvalidos() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", "12A4", BigDecimal.valueOf(100.00));
@@ -97,6 +113,7 @@ class TransacaoRequestTest {
         assertEquals("A senha do cartão deve conter apenas dígitos.", violations.iterator().next().getMessage());
     }
 
+    @DisplayName("Teste de validação de requisição de transação com valor nulo")
     @Test
     void testValor_Nulo() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", "1234", null);
@@ -105,6 +122,7 @@ class TransacaoRequestTest {
         assertEquals("O valor da transação é obrigatório.", violations.iterator().next().getMessage());
     }
 
+    @DisplayName("Teste de validação de requisição de transação com valor inválido")
     @Test
     void testValor_Invalido() {
         TransacaoRequest request = new TransacaoRequest("1234567890123456", "1234", BigDecimal.valueOf(0.00));

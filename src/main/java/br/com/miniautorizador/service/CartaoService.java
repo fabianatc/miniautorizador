@@ -2,7 +2,6 @@ package br.com.miniautorizador.service;
 
 import br.com.miniautorizador.domain.cartao.Cartao;
 import br.com.miniautorizador.domain.cartao.exception.CartaoExistenteException;
-import br.com.miniautorizador.domain.cartao.exception.CartaoInexistenteException;
 import br.com.miniautorizador.infrastructure.repository.CartaoRepository;
 import br.com.miniautorizador.presentation.dto.CartaoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +46,5 @@ public class CartaoService {
         Objects.requireNonNull(cartaoRequest, "Request não pode ser nula");
         Objects.requireNonNull(cartaoRequest.getNumeroCartao(), "O número do cartão deve ser informado");
         Objects.requireNonNull(cartaoRequest.getSenha(), "A senha do cartão deve ser informada");
-    }
-
-    @Transactional(readOnly = true)
-    public BigDecimal obterSaldo(String numeroCartao) {
-        Cartao cartao = cartaoRepository.findByNumeroCartao(numeroCartao)
-                .orElseThrow(() -> new CartaoInexistenteException(numeroCartao));
-        return cartao.getSaldo();
     }
 }

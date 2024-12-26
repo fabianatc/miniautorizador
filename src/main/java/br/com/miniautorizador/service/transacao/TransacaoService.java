@@ -15,6 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+
+/**
+ * Serviço responsável por gerenciar transações de débito do cartão.
+ * <p>
+ * Essa classe é responsável por realizar operações de transação de débito do cartão.
+ * Além disso, ela também é responsável por garantir a integridade das transações e aplicar as regras de negócios relacionadas a transações.
+ *
+ * @author Fabiana Costa
+ */
 @Service
 public class TransacaoService {
     private final CartaoRepository cartaoRepository;
