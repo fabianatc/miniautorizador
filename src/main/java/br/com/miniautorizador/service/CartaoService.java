@@ -13,6 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * Serviço de cartões.
+ * <p>
+ * Esta classe fornece métodos para criar cartões.
+ * Ela também realiza validações e tratamentos de exceções relacionadas aos cartões.
+ *
+ * @author Fabiana Costa
+ */
 @Service
 public class CartaoService {
     private final CartaoRepository cartaoRepository;
