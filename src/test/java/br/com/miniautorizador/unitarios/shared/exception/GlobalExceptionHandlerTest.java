@@ -111,7 +111,7 @@ class GlobalExceptionHandlerTest {
     @DisplayName("Teste de handle para HttpMessageNotReadableException")
     @Test
     void testHandle_HttpMessageNotReadableException() {
-        HttpMessageNotReadableException exception = new HttpMessageNotReadableException("Request inválida", null, null);
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException("Request inválida");
         ResponseEntity<String> response = globalExceptionHandler.handleGenericException(exception);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
