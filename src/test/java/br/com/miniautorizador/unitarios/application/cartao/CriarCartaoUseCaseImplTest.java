@@ -64,9 +64,8 @@ class CriarCartaoUseCaseImplTest {
     void testCriarCartao_ExceptionCartaoExistente() {
         when(cartaoService.criarCartao(cartaoRequest)).thenThrow(new CartaoExistenteException(cartaoRequest.getSenha(), cartaoRequest.getNumeroCartao()));
 
-        CartaoExistenteException exception = assertThrows(CartaoExistenteException.class, () -> {
-            criarCartaoUseCaseImpl.criarCartao(cartaoRequest);
-        });
+        CartaoExistenteException exception = assertThrows(CartaoExistenteException.class, () ->
+                criarCartaoUseCaseImpl.criarCartao(cartaoRequest));
 
         assertEquals(cartaoRequest.getSenha(), exception.getSenha());
         assertEquals(cartaoRequest.getNumeroCartao(), exception.getNumeroCartao());

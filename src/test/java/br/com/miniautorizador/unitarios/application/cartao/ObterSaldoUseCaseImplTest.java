@@ -28,8 +28,8 @@ class ObterSaldoUseCaseImplTest {
     private ObterSaldoUseCaseImpl obterSaldoUseCaseImpl;
 
     private Cartao cartao;
-    private String numeroCartaoValido = "1234567890123456";
-    private String numeroCartaoInvalido = "9999999999999999";
+    private final String numeroCartaoValido = "1234567890123456";
+    private final String numeroCartaoInvalido = "9999999999999999";
 
     @BeforeEach
     void setUp() {
@@ -56,9 +56,8 @@ class ObterSaldoUseCaseImplTest {
     void testObterSaldo_CartaoInexistente() {
         when(cartaoRepository.findByNumeroCartao(numeroCartaoInvalido)).thenReturn(Optional.empty());
 
-        CartaoInexistenteException exception = assertThrows(CartaoInexistenteException.class, () -> {
-            obterSaldoUseCaseImpl.obterSaldo(numeroCartaoInvalido);
-        });
+        CartaoInexistenteException exception = assertThrows(CartaoInexistenteException.class, () ->
+                obterSaldoUseCaseImpl.obterSaldo(numeroCartaoInvalido));
 
         assertEquals(numeroCartaoInvalido, exception.getNumeroCartao());
         verify(cartaoRepository, times(1)).findByNumeroCartao(numeroCartaoInvalido);
