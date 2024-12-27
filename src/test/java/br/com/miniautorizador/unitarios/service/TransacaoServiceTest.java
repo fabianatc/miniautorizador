@@ -1,4 +1,4 @@
-package br.com.miniautorizador.unitarios.services;
+package br.com.miniautorizador.unitarios.service;
 
 import br.com.miniautorizador.domain.cartao.Cartao;
 import br.com.miniautorizador.domain.cartao.exception.CartaoInexistenteTransacaoException;
